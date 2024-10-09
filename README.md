@@ -1,2 +1,2 @@
 # typst-maketitle
-The maketitle function you missed from latex
+The maketitle function you missed from LaTeX, and more.
