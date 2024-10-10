@@ -14,23 +14,23 @@
   (
     name: "Tycho Brahe",
     affiliation: (
-      "University of Copenhagen",
-      "Leipzig University",
-      "University of Rostock",
+      "University of Copenhagen (Denmark)",
+      "Leipzig University (Germany)",
+      "University of Rostock (Germany)",
     ),
   ),
   (
     name: "Johannes Kepler",
     affiliation: (
-      "Tübinger Stift",
-      "University of Tübingen",
+      "Tübinger Stift (Germany)",
+      "University of Tübingen (Germany)",
     ),
   ),
   (
     name: "Galileo Galilei",
     affiliation: (
-      "University of Pisa",
-      "University of Padua",
+      "University of Pisa (Italy)",
+      "University of Padua (Italy)",
     ),
   ),
   (
@@ -58,7 +58,7 @@
   (
     name: "Pierre-Simon Laplace",
     affiliation: (
-      "University of Paris (Sorbonne) (France)",
+      "University of Paris (France)",
       "Paris Academy of Sciences (France)",
     ),
   ),
@@ -73,7 +73,7 @@
 
 #show: doc => maketitle(
   title: [
-    On the Development of Astronomy in 
+    On the Development of Astronomy in
     Renaissance and Early Modern Europe
   ],
   authors: authors,
