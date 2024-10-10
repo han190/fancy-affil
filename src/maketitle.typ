@@ -46,7 +46,7 @@
   (names, affil-array, affil-indices)
 }
 
-#let push-indices(indices: (), start: 0, end: 0, format: "1") = {
+#let push-indices(indices, start, end, format) = {
   let start-str = numbering(format, start)
   let end-str = numbering(format, end)
   if start == end {
@@ -62,31 +62,21 @@
 
 #let join-indices(indices: (), format: "1") = {
   let (start, end) = (indices.at(0), indices.at(0))
-  let indices-strings = ()
+  let results = ()
 
   for i in range(1, indices.len()) {
     if indices.at(i) == end + 1 {
       end = indices.at(i)
     } else {
-      indices-strings = push-indices(
-        indices: indices-strings,
-        start: start,
-        end: end,
-        format: format,
-      )
+      results = push-indices(results, start, end, format)
       (start, end) = (indices.at(i), indices.at(i))
     }
   }
 
   // Concatenate the last pair
-  indices-strings = push-indices(
-    indices: indices-strings,
-    start: start,
-    end: end,
-    format: format,
-  )
+  results = push-indices(results, start, end, format)
   // Return
-  indices-strings.join(",")
+  results.join(",")
 }
 
 #let optional-argument(parameters-dict, argument, default: none) = {
