@@ -46,40 +46,41 @@
   (names, affil-array, affil-indices)
 }
 
-#let push-indices(indices, start, end, format) = {
-  let start-str = numbering(format, start)
-  let end-str = numbering(format, end)
-  if start == end {
+#let push-indices(indices, start-end, format) = {
+  let start-str = numbering(format, start-end.at(0))
+  let end-str = numbering(format, start-end.at(1))
+
+  if start-end.at(1) == start-end.at(0) {
     indices.push(start-str)
-  } else if end == start + 1 {
+  } else if start-end.at(1) == start-end.at(0) + 1 {
     indices.push(start-str + "," + end-str)
   } else {
     indices.push(start-str + "-" + end-str)
   }
+
   // Return
   indices
 }
 
-#let join-indices(indices: (), format: "1") = {
-  let (start, end) = (indices.at(0), indices.at(0))
+#let join-indices(indices, format) = {
+  let start-end = (indices.at(0), indices.at(0))
   let results = ()
 
   for i in range(1, indices.len()) {
-    if indices.at(i) == end + 1 {
-      end = indices.at(i)
+    if indices.at(i) == start-end.at(1) + 1 {
+      start-end.at(1) = indices.at(i)
     } else {
-      results = push-indices(results, start, end, format)
-      (start, end) = (indices.at(i), indices.at(i))
+      results = push-indices(results, start-end, format)
+      start-end = (indices.at(i), indices.at(i))
     }
   }
-
   // Concatenate the last pair
-  results = push-indices(results, start, end, format)
+  results = push-indices(results, start-end, format)
   // Return
   results.join(",")
 }
 
-#let optional-argument(parameters-dict, argument, default: none) = {
+#let optional-argument(parameters-dict, argument, default) = {
   let result = default
   if argument in parameters-dict {
     result = parameters-dict.at(argument)
@@ -95,13 +96,10 @@
 
   // Title
   assert(title != none, message: "Invalid title.")
-  let title-align = optional("title-align", default: center)
-  let title-par = optional("title-par", default: (leading: 0.5em))
-  let title-block = optional("title-block", default: ())
-  let title-text = optional(
-    "title-text",
-    default: (size: 18pt, weight: "bold"),
-  )
+  let title-align = optional("title-align", center)
+  let title-par = optional("title-par", (leading: 0.5em))
+  let title-block = optional("title-block", ())
+  let title-text = optional("title-text", (size: 18pt, weight: "bold"))
 
   {
     set align(title-align)
@@ -124,24 +122,21 @@
       }
     }
 
-    let authors-numbering = optional("authors-numbering", default: "1")
+    let authors-numbering = optional("authors-numbering", "1")
     for i in range(names.len()) {
       let auth = names.at(i)
       if affil-indices.at(i) != none {
-        let indices = join-indices(
-          indices: affil-indices.at(i),
-          format: authors-numbering,
-        )
+        let indices = join-indices(affil-indices.at(i), authors-numbering)
         auth-texts.push(auth + super(GAP + indices))
       } else {
         auth-texts.push(auth)
       }
     }
 
-    let authors-align = optional("authors-align", default: center)
-    let authors-par = optional("authors-par", default: ())
-    let authors-block = optional("authors-block", default: ())
-    let authors-text = optional("authors-text", default: (size: 14pt))
+    let authors-align = optional("authors-align", center)
+    let authors-par = optional("authors-par", ())
+    let authors-block = optional("authors-block", ())
+    let authors-text = optional("authors-text", (size: 14pt))
     {
       set align(authors-align)
       set par(..authors-par)
@@ -150,12 +145,12 @@
     }
 
     // Affiliations
-    let affiliation-numbering = optional("affiliation-numbering", default: "1.")
-    let affiliation-join = optional("affiliation-join", default: "," + SPACE)
-    let affiliation-align = optional("affiliation-align", default: center)
-    let affiliation-par = optional("affiliation-par", default: (justify: false))
-    let affiliation-block = optional("affiliation-block", default: (width: 85%))
-    let affiliation-text = optional("affiliation-text", default: (size: 10pt, style: "italic"))
+    let affiliation-numbering = optional("affiliation-numbering", "1.")
+    let affiliation-join = optional("affiliation-join", "," + SPACE)
+    let affiliation-align = optional("affiliation-align", center)
+    let affiliation-par = optional("affiliation-par", (justify: false))
+    let affiliation-block = optional("affiliation-block", (width: 85%))
+    let affiliation-text = optional("affiliation-text", (size: 10pt, style: "italic"))
 
     let affil-texts = ()
     let affil-label = ""
@@ -193,10 +188,10 @@
     }
 
     // Date block
-    let date-align = optional("date-align", default: center)
-    let date-par = optional("date-par", default: ())
-    let date-block = optional("date-block", default: ())
-    let date-text = optional("date-text", default: (size: 12pt))
+    let date-align = optional("date-align", center)
+    let date-par = optional("date-par", ())
+    let date-block = optional("date-block", ())
+    let date-text = optional("date-text", (size: 12pt))
     {
       set align(date-align)
       set par(..date-par)
