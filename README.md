@@ -10,3 +10,5 @@ typst watch ./tests/tests.typ --root .
 - [ ] Implement capability to write metadata.
 - [ ] Implement three options of the `authors` argument.
 - [ ] Implement `keywords` argument.
+- [x] Separate affiliation numbering, string, and join.
+- [ ] Generalize affiliation and author block.

@@ -42,6 +42,7 @@
     }
     affil-indices.push(indices)
   }
+
   // Return
   (names, affil-array, affil-indices)
 }
@@ -63,6 +64,7 @@
 }
 
 #let join-indices(indices, format) = {
+  indices = indices.sorted()
   let start-end = (indices.at(0), indices.at(0))
   let results = ()
 
@@ -76,6 +78,7 @@
   }
   // Concatenate the last pair
   results = push-indices(results, start-end, format)
+
   // Return
   results.join(",")
 }
@@ -85,6 +88,7 @@
   if argument in parameters-dict {
     result = parameters-dict.at(argument)
   }
+
   // Return
   result
 }
@@ -145,27 +149,30 @@
     }
 
     // Affiliations
-    let affiliation-numbering = optional("affiliation-numbering", "1.")
-    let affiliation-join = optional("affiliation-join", "," + SPACE)
-    let affiliation-align = optional("affiliation-align", center)
-    let affiliation-par = optional("affiliation-par", (justify: false))
-    let affiliation-block = optional("affiliation-block", (width: 85%))
-    let affiliation-text = optional("affiliation-text", (size: 10pt, style: "italic"))
+    let affil-numbering = optional("affil-numbering", "1.")
+    let affil-style = optional("affil-style", x => super(emph(x)))
+    let affil-join = optional("affil-join", "," + SPACE)
+    let affil-align = optional("affil-align", center)
+    let affil-par = optional("affil-par", (justify: false))
+    let affil-block = optional("affil-block", (width: 85%))
+    let affil-text = optional("affil-text", (size: 10pt, style: "italic"))
 
-    let affil-texts = ()
+    let affil-strs = ()
     let affil-label = ""
+    let affil-str = ""
     for i in range(affil-array.len()) {
       if affil-array.at(i) != none {
-        affil-label = super(numbering(affiliation-numbering, i + 1) + GAP)
-        affil-texts.push(affil-label + affil-array.at(i))
+        affil-label = affil-style(numbering(affil-numbering, i + 1))
+        affil-str = text(..affil-text, affil-array.at(i))
+        affil-strs.push(affil-label + affil-str)
       }
     }
 
     {
-      set align(affiliation-align)
-      set par(..affiliation-par)
-      set block(..affiliation-block)
-      block(text(..affiliation-text, affil-texts.join(affiliation-join)))
+      set align(affil-align)
+      set par(..affil-par)
+      set block(..affil-block)
+      block(affil-strs.join(affil-join))
     }
   }
 
