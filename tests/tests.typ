@@ -80,3 +80,13 @@
   date: datetime(year: 1799, month: 12, day: 31),
   doc,
 )
+
+#show: doc => maketitle(
+  title: [
+    Supplementary Material: On the Development of Astronomy in
+    Renaissance and Early Modern Europe
+  ],
+  authors: ("Nicolaus Copernicus", "Tycho Brahe"),
+  date: datetime(year: 1799, month: 12, day: 31),
+  doc,
+)

@@ -19,29 +19,33 @@
   let type-num = -1
   let assert-msg = "Invalid arguments."
   if type(authors) == array {
-    let first-type = type
+    let type-num0 = -1
     if type(authors.at(0)) == str {
-      first-type = str
-      type-num = 0
+      type-num0 = 0
     } else if type(authors.at(0)) == dictionary {
-      first-type = dictionary
-      type-num = 1
-    } else {
-      assert(assert-msg)
+      type-num0 = 1
     }
+    assert(type-num0 in (0, 1), message: assert-msg)
 
     for authors-element in authors {
-      if type(authors-element) != first-type {
-        assert(assert-msg)
+      if type(authors-element) == str {
+        type-num = 0
+      } else if type(authors-element) == dictionary {
+        type-num = 1
+      } else {
+        type-num = -1
       }
+      assert(
+        type-num0 == type-num,
+        message: "Inconsistent element.",
+      )
     }
   } else if type(authors) == str {
     type-num = 2
   } else if type(authors) == dictionary {
     type-num = 3
-  } else {
-    assert(assert-msg)
   }
+  assert(type-num in (0, 1, 2, 3), message: assert-msg)
   type-num
 }
 
@@ -185,69 +189,90 @@
   // Authors
   if authors != none {
     let authors-type = argument-type(authors)
-    assert(authors-type == 1, message: "Not yet implemented.")
-    // Authors
-    let (names, affil-array, affil-indices, emails) = parse-dict-arr(authors)
+    if authors-type == 0 {
+      let authors-join = optional("authors-join", "," + SPACE)
+      let authors-align = optional("authors-align", center)
+      let authors-par = optional("authors-par", ())
+      let authors-block = optional("authors-block", ())
+      let authors-text = optional("authors-text", (size: 14pt))
 
-    let authors-strings = ()
-    let authors-join = optional("authors-join", "," + SPACE)
-    let authors-numbering = optional("authors-numbering", "1")
-
-    // If there are only 2 authors use "and" otherwise use ",".
-    if names.len() == 2 {
-      authors-join = SPACE + "and" + SPACE
-      // If two authors share same affiliation combine them.
-      if affil-indices.at(0) == affil-indices.at(1) {
-        affil-indices.at(0) = none
+      // If there are only 2 authors use "and" otherwise use ",".
+      if authors.len() == 2 {
+        authors-join = SPACE + "and" + SPACE
       }
-    }
 
-    for i in range(names.len()) {
-      let auth = names.at(i)
-      if affil-indices.at(i) != none {
-        let indices = join-indices(affil-indices.at(i), authors-numbering)
-        authors-strings.push(auth + super(GAP + indices))
-      } else {
-        authors-strings.push(auth)
+      {
+        set align(authors-align)
+        set par(..authors-par)
+        set block(..authors-block)
+        block(text(..authors-text, authors.join(authors-join)))
       }
-    }
+    } else if authors-type == 1 {
+      // Authors
+      let (names, affil-array, affil-indices, emails) = parse-dict-arr(authors)
 
-    let authors-align = optional("authors-align", center)
-    let authors-par = optional("authors-par", ())
-    let authors-block = optional("authors-block", ())
-    let authors-text = optional("authors-text", (size: 14pt))
-    {
-      set align(authors-align)
-      set par(..authors-par)
-      set block(..authors-block)
-      block(text(..authors-text, authors-strings.join(authors-join)))
-    }
+      let authors-numbering = optional("authors-numbering", "1")
+      let authors-join = optional("authors-join", "," + SPACE)
+      let authors-align = optional("authors-align", center)
+      let authors-par = optional("authors-par", ())
+      let authors-block = optional("authors-block", ())
+      let authors-text = optional("authors-text", (size: 14pt))
 
-    // Affiliations
-    let affil-numbering = optional("affil-numbering", "1.")
-    let affil-style = optional("affil-style", x => super(emph(x)))
-    let affil-join = optional("affil-join", "," + SPACE)
-    let affil-align = optional("affil-align", center)
-    let affil-par = optional("affil-par", (justify: false))
-    let affil-block = optional("affil-block", (width: 85%))
-    let affil-text = optional("affil-text", (size: 10pt, style: "italic"))
-
-    let affil-strs = ()
-    let affil-label = ""
-    let affil-str = ""
-    for i in range(affil-array.len()) {
-      if affil-array.at(i) != none {
-        affil-label = affil-style(numbering(affil-numbering, i + 1))
-        affil-str = text(..affil-text, affil-array.at(i))
-        affil-strs.push(affil-label + affil-str)
+      // If there are only 2 authors use "and" otherwise use ",".
+      if names.len() == 2 {
+        authors-join = SPACE + "and" + SPACE
+        // If two authors share same affiliation combine them.
+        if affil-indices.at(0) == affil-indices.at(1) {
+          affil-indices.at(0) = none
+        }
       }
-    }
 
-    {
-      set align(affil-align)
-      set par(..affil-par)
-      set block(..affil-block)
-      block(affil-strs.join(affil-join))
+      let authors-strs = ()
+      let indices-str = ""
+      for i in range(names.len()) {
+        if affil-indices.at(i) != none {
+          indices-str = join-indices(affil-indices.at(i), authors-numbering)
+          authors-strs.push(names.at(i) + super(GAP + indices-str))
+        } else {
+          authors-strs.push(names.at(i))
+        }
+      }
+
+      {
+        set align(authors-align)
+        set par(..authors-par)
+        set block(..authors-block)
+        block(text(..authors-text, authors-strs.join(authors-join)))
+      }
+
+      // Affiliations
+      let affil-label-numbering = optional("affil-label-numbering", "1.")
+      let affil-label-style = optional("affil-label-style", x => super(emph(x)))
+      let affil-join = optional("affil-join", "," + SPACE)
+      let affil-align = optional("affil-align", center)
+      let affil-par = optional("affil-par", (justify: false))
+      let affil-block = optional("affil-block", (width: 85%))
+      let affil-text = optional("affil-text", (size: 10pt, style: "italic"))
+
+      let affil-strs = ()
+      let affil-label = ""
+      let affil-str = ""
+      for i in range(affil-array.len()) {
+        if affil-array.at(i) != none {
+          affil-label = affil-label-style(numbering(affil-label-numbering, i + 1))
+          affil-str = text(..affil-text, affil-array.at(i))
+          affil-strs.push(affil-label + affil-str)
+        }
+      }
+
+      {
+        set align(affil-align)
+        set par(..affil-par)
+        set block(..affil-block)
+        block(affil-strs.join(affil-join))
+      }
+    } else {
+      assert("Parameter \"Authors\" is" + "either an array of strings" + "or an array of dictionaries.")
     }
   }
 
