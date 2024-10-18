@@ -1,4 +1,4 @@
-#import "/src/lib.typ": maketitle
+#import "@local/maketitle:0.1.0": maketitle
 
 #let authors = (
   (
