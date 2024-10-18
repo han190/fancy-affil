@@ -1,4 +1,5 @@
-#import "@local/maketitle:0.1.0": maketitle
+// #import "@local/maketitle:0.1.0": maketitle
+#import "/src/lib.typ": maketitle
 
 #let authors = (
   (
@@ -74,10 +75,11 @@
 #show heading: it => {
   set align(center)
   set text(16pt, weight: "regular", baseline: -1pt)
+  set line(stroke: 0.5pt)
   let content = smallcaps(it.body)
   let content-size = measure(content)
   layout(size => {
-    let content-width = content-size.width + 1pt
+    let content-width = content-size.width
     let line-width = (size.width - content-width) * 0.5
     grid(
       columns: (line-width, content-width, line-width),
@@ -118,7 +120,7 @@
           "University of Rostock (Germany)",
         ),
       ),
-      ...
+      // and many other author dictionaries...
     )
 
     #show: doc => maketitle(
