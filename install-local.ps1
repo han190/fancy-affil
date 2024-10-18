@@ -27,16 +27,23 @@ if ($Destination -eq "") {
   $packLocation = $Destination
 }
 
+Write-Host "Package: ${name}"
+Write-Host "Version: ${version}"
+
 # Create destination if not exist.
 if (Test-Path $packLocation -PathType Container) {
-  Write-Host "Package ${packLocation} already exists."
+  Write-Host "Package folder already exists."
 } else {
-  Write-Host "Package ${packLocation} does not exists. Create folder."
+  Write-Host "Package folder does not exists. Create folder."
   New-Item -ItemType Directory $packLocation -Force | Out-Null
   New-Item -ItemType Directory "$packLocation\src\" -Force | Out-Null
 }
 
 # Copy src folder, typst.toml and README.md
+Write-Host "Copying src directory..."
 Copy-Item -Path ".\src\*.typ" -Destination "$packLocation\src" -Recurse
+Write-Host "Copying typst.toml..."
 Copy-Item ".\typst.toml" -Destination $packLocation
+Write-Host "Copying README.md..."
 Copy-Item ".\README.md" -Destination $packLocation
+Write-Host "Successfully installed."
