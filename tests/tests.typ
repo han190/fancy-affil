@@ -99,14 +99,6 @@
           "Frombork Cathedral (Poland)",
         ),
       ),
-      (
-        name: "Tycho Brahe",
-        affiliation: (
-          "University of Copenhagen (Denmark)",
-          "Leipzig University (Germany)",
-          "University of Rostock (Germany)",
-        ),
-      ),
       // and many other author dictionaries...
     )
 
