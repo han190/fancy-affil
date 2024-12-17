@@ -1,1 +1,1 @@
-#import "affiliation.typ": get-affiliations
+#import "affiliation.typ": get-authors

@@ -1,8 +1,8 @@
 
 // #import "@local/maketitle:0.1.0": maketitle
-#import "/src/affiliation.typ": get-affiliations
+#import "/src/affiliation.typ": get-authors
 
-#let authors = (
+#let authors-info = (
   (
     name: "Nicolaus Copernicus",
     affiliation: (
@@ -81,14 +81,14 @@
   align: (left, center),
   column-gutter: 8pt,
   inset: 8pt,
+  fill: (luma(240), white),
 )
 
 == Example 1: Default options
 #grid(
-  fill: (luma(240), white),
   [
     ```typst
-    #let authors = (
+    #let authors-info = (
       (
         name: "Nicolaus Copernicus",
         affiliation: (
@@ -102,14 +102,12 @@
       // and many other author dictionaries...
     )
 
-    #let (authors, affiliations) = get-affiliations(authors)
-    #authors
-    #affiliations
+    #let (auths-blk, affils-blk) = get-authors(authors-info)
+    #auths-blk#affils-blk
     ```
   ],
   [
-    #let (authors, affiliations) = get-affiliations(authors)
-    #authors
-    #affiliations
+    #let (auths-blk, affils-blk) = get-authors(authors-info)
+    #auths-blk#affils-blk
   ],
 )

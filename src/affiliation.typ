@@ -214,7 +214,7 @@ Return
 ------
 an array of two blocks: authors' block and affiliations' block.
 */
-#let get-affiliations(authors, ..parameters) = {
+#let get-authors(authors, ..parameters) = {
   // Local constant and functions
   let GAP = h(1pt)
   let optional = optional-argument.with(parameters.named())
