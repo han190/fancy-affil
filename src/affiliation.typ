@@ -1,22 +1,23 @@
 #let SPACE = " "
+
+/*
+Check type of input argument.
+
+Parameters
+----------
+argument: any
+
+Return
+------
+type-num: int
+
+The return value is:
+0 if argument is an array of strings.
+1 if argument is an array of dictionaries.
+2 if argument is a string.
+3 if argument is a dictionary.
+*/
 #let argument-type(authors) = {
-  /*
-    Check type of input argument.
-
-    Parameters
-    ----------
-    argument: any
-
-    Return
-    ------
-    type-num: int
-
-    The return value is:
-    0 if argument is an array of strings.
-    1 if argument is an array of dictionaries.
-    2 if argument is a string.
-    3 if argument is a dictionary.
-  */
   let type-num = -1
   if type(authors) == array {
     let type-num0 = -1
@@ -49,29 +50,29 @@
   type-num // Return
 }
 
+/* Find location of an element*/
 #let findloc(array, element) = {
-  /* Find location of an element*/
   let loc = array.position(x => { x == element })
   loc // Return
 }
 
+/*
+Parse authors, which is an array of dictionaries to:
+1. Names of authors.
+2. Names of affiliations.
+3. An array of integer arrays that represents the affiliation(s)
+
+Parameters
+----------
+authors: an array of dictionaries
+
+Return
+------
+names: an array of strings
+affils: an array of strings
+affil-indices: an array of integer arrays
+*/
 #let parse-dict-arr(authors) = {
-  /*
-    Parse authors, which is an array of dictionaries to:
-    1. Names of authors.
-    2. Names of affiliations.
-    3. An array of integer arrays that represents the affiliation(s)
-
-    Parameters
-    ----------
-    authors: an array of dictionaries
-
-    Return
-    ------
-    names: an array of strings
-    affils: an array of strings
-    affil-indices: an array of integer arrays
-  */
   let (names, affils, affil-indices, emails) = ((), (), (), ())
 
   for author in authors {
@@ -116,21 +117,21 @@
   (names, affils, affil-indices, emails) // Return
 }
 
-#let push-indices(indices, start-end, format) = {
-  /*
-    Push indices (inner function of join-indices)
-    Given an indices: [a0, a1, a2, a3, ..., an]
-    Output a string:
-    1. "a0,a1,a2,a3".
-    2. "a0-an" if the array is consective.
-    3. "a0" if the element is the same.
+/*
+Push indices (inner function of join-indices)
+Given an indices: [a0, a1, a2, a3, ..., an]
+Output a string:
+1. "a0,a1,a2,a3".
+2. "a0-an" if the array is consective.
+3. "a0" if the element is the same.
 
-    Parameters
-    ----------
-    indices:
-    start-end: 2-element array
-    format: numbering format
-  */
+Parameters
+----------
+indices:
+start-end: 2-element array
+format: numbering format
+*/
+#let push-indices(indices, start-end, format) = {
   let start-str = numbering(format, start-end.at(0))
   let end-str = numbering(format, start-end.at(1))
 
@@ -144,17 +145,17 @@
   indices // Return
 }
 
-#let join-indices(indices, format) = {
-  /*
-    Parameters
-    ----------
-    indices: array of integers
-    format: numbering format
+/*
+Parameters
+----------
+indices: array of integers
+format: numbering format
 
-    Return
-    ------
-    results: string
-  */
+Return
+------
+results: string
+*/
+#let join-indices(indices, format) = {
   indices = indices.sorted()
   let start-end = (indices.at(0), indices.at(0))
   let results = ()
@@ -172,8 +173,8 @@
   results.join(",") // Return
 }
 
+/* Initialize optional argument with a default value */
 #let optional-argument(parameters-dict, argument, default) = {
-  /* Initialize optional argument with a default value */
   let result = default
   if argument in parameters-dict {
     result = parameters-dict.at(argument)
@@ -181,39 +182,39 @@
   result // Return
 }
 
+/* Default author function */
 #let default-authors-func(authors-text) = {
-  /* Default author function */
   set align(center)
   block(text(size: 12pt, authors-text))
 }
 
+/* Default affiliation function */
 #let default-affil-func(affil-text) = {
-  /* Default affiliation function */
   set align(center)
   set par(justify: false)
   set block(width: 85%)
   block(text(size: 10pt, style: "italic", affil-text))
 }
 
+/*
+Generate authors and affiliations based on authors' information.
+
+Parameters
+----------
+authors: an array of string or dictionary
+authors-join: (default: ", ") join script for authors
+authors-numbering: (defualt: "1") authors numbering
+authors-func: (default: default-authors-func) authors style function
+affil-label-numbering: (default: "1.") affiliation numbering
+affil-label-style: (default: ) affiliation label style
+affil-join: (default: ", ") join script for affiliations
+affil-func: (default: default-affil-func) affiliation style function
+
+Return
+------
+an array of two blocks: authors' block and affiliations' block.
+*/
 #let get-affiliations(authors, ..parameters) = {
-  /*
-    Generate authors and affiliations based on authors' information.
-
-    Parameters
-    ----------
-    authors: an array of string or dictionary
-    authors-join: (optional, default: ", ") join script for authors
-    authors-numbering: (optional, defualt: "1") authors numbering
-    authors-func: (optional, default: default-authors-func) authors style function
-    affil-label-numbering: (optional, default: "1.") affiliation numbering
-    affil-label-style: (optional, default: ) affiliation label style
-    affil-join: (optional, default: ", ") join script for affiliations
-    affil-func: (optional, default: default-affil-func) affiliation style function
-
-    Return
-    ------
-    an array of two blocks: authors' block and affiliations' block.
-  */
   // Local constant and functions
   let GAP = h(1pt)
   let optional = optional-argument.with(parameters.named())
@@ -234,35 +235,31 @@
     // If authors is an array of dictionaries.
   } else if authors-type == 1 {
     // Deal with authors
-    let (names, affil-array, affil-indices, emails) = parse-dict-arr(authors)
+    let (names, affil-array, affil-idx, emails) = parse-dict-arr(authors)
 
     let authors-numbering = optional("authors-numbering", "1")
     // If there are only 2 authors use "and" otherwise use ",".
     if names.len() == 2 {
       authors-join = SPACE + "and" + SPACE
       // If two authors share same affiliation combine them.
-      if affil-indices.at(0) == affil-indices.at(1) {
-        affil-indices.at(0) = none
-      }
+      if affil-idx.at(0) == affil-idx.at(1) { affil-idx.at(0) = none }
     }
 
     let authors-strs = ()
     let indices-str = ""
     for i in range(names.len()) {
-      if affil-indices.at(i) != none {
-        indices-str = join-indices(affil-indices.at(i), authors-numbering)
+      if affil-idx.at(i) != none {
+        indices-str = join-indices(affil-idx.at(i), authors-numbering)
         authors-strs.push(names.at(i) + super(GAP + indices-str))
-      } else {
-        authors-strs.push(names.at(i))
-      }
+      } else { authors-strs.push(names.at(i)) }
     }
     authors-block = authors-func(authors-strs.join(authors-join))
 
     // Deal with affiliations
     let affil-label-numbering = optional("affil-label-numbering", "1.")
-    let affil-label-style = optional("affil-label-style", x => super(emph(x)))
+    let affil-label-style = optional("affil-label-style", x => super(emph(x) + GAP))
     let affil-join = optional("affil-join", "," + SPACE)
-    // let affil-func = optional("affil-func", default-affil-func)
+    let affil-func = optional("affil-func", default-affil-func)
 
     let affil-strs = ()
     let affil-label = ""
@@ -273,7 +270,7 @@
         affil-strs.push(affil-label + affil-array.at(i))
       }
     }
-    affiliations-block = (affil-strs.join(affil-join))
+    affiliations-block = affil-func(affil-strs.join(affil-join))
   }
   (authors-block, affiliations-block) // Return
 }
