@@ -1,12 +1,12 @@
 [package]
-name = "maketitle"
+name = "affiliations"
 version = "0.1.0"
-compiler = "0.11.0"
-repository = "https://github.com/han190/typst-maketitle"
+compiler = "0.12.0"
+repository = "https://github.com/han190/typst-affiliations"
 entrypoint = "src/lib.typ"
 authors = ["Han Tang <limpid.mazarine@gmail.com>"]
 categories = ["layout", "text"]
 license = "LGPL-3.0-or-later"
-description = "The maketitle function you missed from LaTeX"
-keywords = ["maketitle"]
+description = "An affiliations"
+keywords = ["typst", "affiliations"]
 exclude = []

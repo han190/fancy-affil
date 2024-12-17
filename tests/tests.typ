@@ -1,5 +1,6 @@
+
 // #import "@local/maketitle:0.1.0": maketitle
-#import "/src/lib.typ": maketitle
+#import "/src/affiliation.typ": get-affiliations
 
 #let authors = (
   (
@@ -72,31 +73,17 @@
   ),
 )
 
-#show heading: it => {
-  set align(center)
-  set text(16pt, weight: "regular", baseline: -1pt)
-  set line(stroke: 0.5pt)
-  let content = smallcaps(it.body)
-  let content-size = measure(content)
-  layout(size => {
-    let content-width = content-size.width
-    let line-width = (size.width - content-width) * 0.5
-    grid(
-      columns: (line-width, content-width, line-width),
-      align: (left + horizon, center + horizon, right + horizon),
-      line(length: 100%), content, line(length: 100%),
-    )
-  })
-}
-#set page(width: 12in, height: 14in, margin: 1.1in)
+
+#set page("a4", margin: 1in, flipped: true)
+#set text(size: 12pt)
 #set grid(
-  columns: (0.9fr, 1fr),
+  columns: (1fr, 1fr),
   align: (left, center),
   column-gutter: 8pt,
   inset: 8pt,
 )
 
-= Example 1: Title, Authors (Array of dictionaries)
+== Example 1: Default options
 #grid(
   fill: (luma(240), white),
   [
@@ -123,53 +110,14 @@
       // and many other author dictionaries...
     )
 
-    #show: doc => maketitle(
-      title: [
-        On the Development of Astronomy in
-        Renaissance and Early Modern Europe
-      ],
-      authors: authors,
-      doc,
-    )
+    #let (authors, affiliations) = get-affiliations(authors)
+    #authors
+    #affiliations
     ```
   ],
   [
-    #show: doc => maketitle(
-      title: [
-        On the Development of Astronomy in
-        Renaissance and Early Modern Europe
-      ],
-      authors: authors,
-      doc,
-    )
+    #let (authors, affiliations) = get-affiliations(authors)
+    #authors
+    #affiliations
   ],
-)
-
-= Example 2: Title, Authors (Array of strings), Date
-#grid(
-  fill: (luma(240), white),
-  [
-    ```typst
-    #show: doc => maketitle(
-      title: [
-        Supplementary Material: On the Development
-        of Astronomy in Renaissance and Early Modern Europe
-      ],
-      authors: ("Nicolaus Copernicus", "Tycho Brahe"),
-      date: datetime(year: 1799, month: 12, day: 31),
-      doc,
-    )
-    ```
-  ],
-  [
-    #show: doc => maketitle(
-      title: [
-        Supplementary Material: On the Development of Astronomy in
-        Renaissance and Early Modern Europe
-      ],
-      authors: ("Nicolaus Copernicus", "Tycho Brahe"),
-      date: datetime(year: 1799, month: 12, day: 31),
-      doc,
-    )
-  ]
 )

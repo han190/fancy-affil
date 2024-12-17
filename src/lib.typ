@@ -1,2 +1,1 @@
-#import "maketitle.typ": maketitle
-#import "showdate.typ": showdate
+#import "affiliation.typ": get-affiliations
