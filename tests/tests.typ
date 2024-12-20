@@ -12,6 +12,7 @@
       "University of Ferrara (Italy)",
       "Frombork Cathedral (Poland)",
     ),
+    email: "NicolausCopernicus@krakow.edu"
   ),
   (
     name: "Tycho Brahe",
@@ -98,6 +99,7 @@
           "University of Ferrara (Italy)",
           "Frombork Cathedral (Poland)",
         ),
+        email: "NicolausCopernicus@krakow.edu"
       ),
       // and many other author dictionaries...
     )

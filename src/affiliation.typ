@@ -1,6 +1,30 @@
 #let SPACE = " "
 
 /*
+Check if all elements in an array belong to one type.
+
+Parameters
+----------
+array: an array
+
+Return
+------
+consistent: bool
+first-type: type
+*/
+#let is-consistent(array) = {
+  let element-type = type(array.at(0))
+  let consistent = true
+  for element in array.slice(1) {
+    if type(element) != element-type {
+      consistent = false
+      break
+    }
+  }
+  (consistent, element-type) // Return
+}
+
+/*
 Check type of input argument.
 
 Parameters
@@ -18,36 +42,33 @@ The return value is:
 3 if argument is a dictionary.
 */
 #let argument-type(authors) = {
-  let type-num = -1
+  let arg-type = -1
+  let type-table = (str: 0, dictionary: 1)
   if type(authors) == array {
-    let type-num0 = -1
-    if type(authors.at(0)) == str {
-      type-num0 = 0
-    } else if type(authors.at(0)) == dictionary {
-      type-num0 = 1
-    }
-    assert(type-num0 in (0, 1), message: "Invalid arguments.")
-
-    for authors-element in authors {
-      if type(authors-element) == str {
-        type-num = 0
-      } else if type(authors-element) == dictionary {
-        type-num = 1
-      } else {
-        type-num = -1
-      }
-      assert(type-num0 == type-num, message: "Inconsistent element.")
+    let (consistent, element-type) = is-consistent(authors)
+    assert(
+      consistent,
+      message: "Inconsistent elements.",
+    )
+    assert(
+      element-type in (str, dictionary),
+      message: "Invalid elements.",
+    )
+    if element-type == str {
+      arg-type = 0
+    } else if element-type == dictionary {
+      arg-type = 1
     }
   } else if type(authors) == str {
-    type-num = 2
+    arg-type = 2
   } else if type(authors) == dictionary {
-    type-num = 3
+    arg-type = 3
   }
   assert(
-    type-num in (0, 1, 2, 3),
-    message: "Invalid arguments. type-num=" + str(type-num),
+    arg-type != -1,
+    message: "Invalid arguments.",
   )
-  type-num // Return
+  arg-type // Return
 }
 
 /* Find location of an element*/
@@ -71,6 +92,7 @@ Return
 names: an array of strings
 affils: an array of strings
 affil-indices: an array of integer arrays
+emails: an array of strings
 */
 #let parse-dict-arr(authors) = {
   let (names, affils, affil-indices, emails) = ((), (), (), ())
@@ -146,6 +168,9 @@ format: numbering format
 }
 
 /*
+Join affiliation indices.
+For example, [1, 2, 3, 5, 6, 7] -> "1-3,5-7".
+
 Parameters
 ----------
 indices: array of integers
@@ -193,7 +218,7 @@ results: string
   set align(center)
   set par(justify: false)
   set block(width: 85%)
-  block(text(size: 10pt, style: "italic", affil-text))
+  block(text(size: 10pt, affil-text))
 }
 
 /*
@@ -209,6 +234,7 @@ affil-label-numbering: (default: "1.") affiliation numbering
 affil-label-style: (default: ) affiliation label style
 affil-join: (default: ", ") join script for affiliations
 affil-func: (default: default-affil-func) affiliation style function
+email-symbol: (default: "🖂") email symbol
 
 Return
 ------
@@ -235,29 +261,36 @@ an array of two blocks: authors' block and affiliations' block.
     // If authors is an array of dictionaries.
   } else if authors-type == 1 {
     // Deal with authors
-    let (names, affil-array, affil-idx, emails) = parse-dict-arr(authors)
+    let (names, affil-array, affil-indices, emails) = parse-dict-arr(authors)
 
     let authors-numbering = optional("authors-numbering", "1")
     // If there are only 2 authors use "and" otherwise use ",".
     if names.len() == 2 {
       authors-join = SPACE + "and" + SPACE
       // If two authors share same affiliation combine them.
-      if affil-idx.at(0) == affil-idx.at(1) { affil-idx.at(0) = none }
+      if affil-indices.at(0) == affil-indices.at(1) { affil-indices.at(0) = none }
     }
 
     let authors-strs = ()
     let indices-str = ""
     for i in range(names.len()) {
-      if affil-idx.at(i) != none {
-        indices-str = join-indices(affil-idx.at(i), authors-numbering)
+      if affil-indices.at(i) != none {
+        indices-str = join-indices(affil-indices.at(i), authors-numbering)
         authors-strs.push(names.at(i) + super(GAP + indices-str))
       } else { authors-strs.push(names.at(i)) }
+    }
+
+    let email-symbol = optional("email-symbol", symbol("🖂"))
+    for i in range(authors-strs.len()) {
+      if emails.at(i) != none {
+        authors-strs.at(i) += super(GAP + link(emails.at(i), email-symbol))
+      }
     }
     authors-block = authors-func(authors-strs.join(authors-join))
 
     // Deal with affiliations
     let affil-label-numbering = optional("affil-label-numbering", "1.")
-    let affil-label-style = optional("affil-label-style", x => super(emph(x) + GAP))
+    let affil-label-style = optional("affil-label-style", x => super(x + GAP))
     let affil-join = optional("affil-join", "," + SPACE)
     let affil-func = optional("affil-func", default-affil-func)
 
