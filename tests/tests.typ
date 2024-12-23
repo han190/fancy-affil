@@ -75,14 +75,23 @@
 )
 
 
-#set page("a4", margin: 1in, flipped: true)
-#set text(size: 12pt)
+#let github-black = rgb("0d1117")
+#let github-white = rgb("f0f6fc")
+#let dark-theme = false
+
+#let (background, foreground) = (github-white, github-black)
+#let code-background = luma(224)
+// #let (background, foreground) = (github-black, github-white)
+// #let code-background = luma(32)
+
+#set page(width: 4.9in, height: 11.69in, margin: 0.5in, flipped: true, fill: background)
+#set text(size: 12pt, fill: foreground)
 #set grid(
   columns: (1fr, 1fr),
   align: (left, center),
   column-gutter: 8pt,
   inset: 8pt,
-  fill: (luma(240), white),
+  fill: (code-background, background),
 )
 
 == Example 1: Default options
@@ -105,11 +114,13 @@
     )
 
     #let (auths-blk, affils-blk) = get-authors(authors-info)
-    #auths-blk#affils-blk
+    #auths-blk
+    #affils-blk
     ```
   ],
   [
     #let (auths-blk, affils-blk) = get-authors(authors-info)
-    #auths-blk#affils-blk
+    #auths-blk
+    #affils-blk
   ],
 )

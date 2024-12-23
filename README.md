@@ -5,7 +5,8 @@ An auto affiliation function for Typst. This library provides a single function,
 2. A list of sorted affiliations.
 
 ## Example
-![Example Output](assets/example-output.png)
+![Example Output](assets/tests-light.png#gh-light-mode-only)
+![Example Output](assets/tests-dark.png#gh-dark-mode-only)
 
 ## `get-authors`
 The function `get-authors` is highly customizable:
