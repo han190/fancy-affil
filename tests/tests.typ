@@ -12,7 +12,8 @@
       "University of Ferrara (Italy)",
       "Frombork Cathedral (Poland)",
     ),
-    email: "NicolausCopernicus@krakow.edu"
+    email: "NicolausCopernicus@krakow.edu",
+    orcid: "0000-0001-2345-6789"
   ),
   (
     name: "Tycho Brahe",
@@ -21,6 +22,7 @@
       "Leipzig University (Germany)",
       "University of Rostock (Germany)",
     ),
+    email: "TychoBarhe@copenhagen.edu",
   ),
   (
     name: "Johannes Kepler",
@@ -28,6 +30,7 @@
       "Tübinger Stift (Germany)",
       "University of Tübingen (Germany)",
     ),
+    orcid: "0000-0012-3456-7890"
   ),
   (
     name: "Galileo Galilei",
@@ -108,11 +111,10 @@
           "University of Ferrara (Italy)",
           "Frombork Cathedral (Poland)",
         ),
-        email: "NicolausCopernicus@krakow.edu"
-      ),
-      // and many other author dictionaries...
+        email: "NicolausCopernicus@krakow.edu",
+        orcid: "0000-0001-2345-6789"
+      ), // and many other authors...
     )
-
     #let (auths-blk, affils-blk) = get-authors(authors-info)
     #auths-blk
     #affils-blk
