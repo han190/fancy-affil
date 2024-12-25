@@ -98,8 +98,8 @@ int or none
 /*
 Push indices (inner function of join-indices).
 
-Given an array of indices, this function formats and pushes
-the indices into the results array based on the specified format.
+Given an array of indices, this function formats and pushes the indices into the
+results array based on the specified format.
 
 Parameters
 ----------
@@ -132,9 +132,8 @@ None
 /*
 Join indices into a formatted string.
 
-This function takes an array of indices and joins them
-into a single string, using the specified format. 
-Consecutive indices are represented as a range.
+This function takes an array of indices and joins them into a single string,
+using the specified format. Consecutive indices are represented as a range.
 
 Parameters
 ----------
@@ -294,8 +293,8 @@ Extracts and formats authors' names and affiliations.
 Parameters
 ----------
 authors: array of strings or dictionaries
-    An array containing authors' information. 
-    Each element can be a string (author's name) or a dictionary with detailed information.
+    An array containing authors' information. Each element can be a string
+    (author's name) or a dictionary with detailed information.
 authors-join: string (default: ", ")
     The string used to join multiple authors' names.
 authors-join-2: string (default: " and ")
@@ -338,7 +337,8 @@ affil-order: tuple (default: ("number", "affil"))
 Return
 ------
 array of two blocks
-    An array containing two blocks: the authors' block and the affiliations' block.
+    An array containing two blocks: the authors' block and the affiliations'
+    block.
 */
 #let get-affiliations(authors, ..parameters) = {
   // Local constant and functions
@@ -367,14 +367,19 @@ array of two blocks
     if authors-info.name.len() == 2 {
       authors-join = authors-join-2
       // If two authors share same affiliation combine them.
-      if affil-indices.at(0) == affil-indices.at(1) { affil-indices.at(0) = none }
+      if affil-indices.at(0) == affil-indices.at(1) {
+        affil-indices.at(0) = none
+      }
     }
 
     let orcid-logo-size = optional("orcid-logo-size", 9.5pt)
     let orcid-logo = box(image("../data/ORCID_iD.svg", height: orcid-logo-size))
     let email-symbol = optional("email-symbol", symbol("🖂"))
 
-    let authors-order = optional("authors-order", ("name", "orcid", "email", "affil-index"))
+    let authors-order = optional(
+      "authors-order",
+      ("name", "orcid", "email", "affil-index"),
+    )
     let name-style = optional("name-style", x => x)
     let orcid-style = optional("orcid-style", x => link(x, orcid-logo))
     let email-style = optional("email-style", x => link(x, email-symbol))
@@ -387,15 +392,15 @@ array of two blocks
     )
     let authors-box-join = optional("authors-box-join", GAP)
 
-    let (current-box, current-boxes) = (none, none)
-    let authors-boxes = ()
+    let (temp-box, temp-boxes, authors-boxes) = (none, none, ())
     for i in range(authors-info.name.len()) {
-      current-boxes = ()
+      temp-boxes = ()
       for key in authors-order {
-        current-box = authors-info.at(key).at(i)
-        if current-box != none { current-boxes.push(style-funcs.at(key)(current-box)) }
+        temp-box = authors-info.at(key).at(i)
+        if temp-box == none { continue }
+        temp-boxes.push(style-funcs.at(key)(temp-box))
       }
-      authors-boxes.push(current-boxes.join(authors-box-join))
+      authors-boxes.push(temp-boxes.join(authors-box-join))
     }
     authors-block = authors-func(authors-boxes.join(authors-join))
 
@@ -410,17 +415,16 @@ array of two blocks
     let affil-order = optional("affil-order", ("number", "affil"))
 
     let affil-boxes = ()
-    let (affil-label, affil) = ("", "")
+    let (affil-label, affil) = (none, none)
     for i in range(authors-info.affil.len()) {
-      affil-label = affil-label-style(numbering(affil-label-numbering, i + 1))
-      affil = affil-style(authors-info.affil.at(i))
+      affil = (
+        number: affil-label-style(numbering(affil-label-numbering, i + 1)),
+        affil: affil-style(authors-info.affil.at(i)),
+      )
 
-      if affil-order == ("number", "affil") {
-        current-boxes = (affil-label, affil)
-      } else if affil-order == ("affil", "number") {
-        current-boxes = (affil, affil-label)
-      }
-      affil-boxes.push(current-boxes.join(affil-box-join))
+      temp-boxes = ()
+      for i in affil-order { temp-boxes.push(affil.at(i)) }
+      affil-boxes.push(temp-boxes.join(affil-box-join))
     }
     affiliations-block = affil-func(affil-boxes.join(affil-join))
   }
