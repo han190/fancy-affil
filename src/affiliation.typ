@@ -412,18 +412,15 @@ array of two blocks
     let affil-join = optional("affil-join", "," + SPACE)
     let affil-box-join = optional("affil-box-join", GAP)
     let affil-func = optional("affil-func", default-affil-func)
-    let affil-order = optional("affil-order", ("number", "affil"))
+    let affil-order = optional("affil-order", ("affil-index", "affil"))
 
-    let affil-boxes = ()
-    let (affil-label, affil) = (none, none)
+    let (affil-index, affil, affil-boxes) = (none, none, ())
     for i in range(authors-info.affil.len()) {
-      affil = (
-        number: affil-label-style(numbering(affil-label-numbering, i + 1)),
-        affil: affil-style(authors-info.affil.at(i)),
-      )
-
+      affil-index = affil-label-style(numbering(affil-label-numbering, i + 1))
+      affil = affil-style(authors-info.affil.at(i))
+      temp-box = (affil-index: affil-index, affil: affil)
       temp-boxes = ()
-      for i in affil-order { temp-boxes.push(affil.at(i)) }
+      for j in affil-order { temp-boxes.push(temp-box.at(j)) }
       affil-boxes.push(temp-boxes.join(affil-box-join))
     }
     affiliations-block = affil-func(affil-boxes.join(affil-join))

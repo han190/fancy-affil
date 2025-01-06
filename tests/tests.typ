@@ -1,4 +1,4 @@
-#import "/src/affiliation.typ": get-affiliations
+#import "/src/lib.typ": get-affiliations
 
 #let authors-info = (
   "Nicolaus Copernicus": (
