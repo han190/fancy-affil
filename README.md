@@ -74,6 +74,11 @@ Extracts and formats authors' names and affiliations. The function is highly cus
 }
 ```
 
+## Install to @local (linux)
+```
+cp -r ./* ~/.local/share/typst/packages/local/fancy-affil/0.2.0/
+```
+
 ## Tests
 
 To run the test, use the following command:

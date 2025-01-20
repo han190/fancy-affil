@@ -1,4 +1,4 @@
-#import "/src/lib.typ": get-affiliations
+#import "/src/lib.typ": *
 
 #let authors-info = (
   "Nicolaus Copernicus": (
@@ -63,6 +63,27 @@
   ),
 )
 
+#let authors-info2 = (
+  "Nicolaus Copernicus": (
+    affiliation: (
+      "University of Krakow (Poland)",
+      "University of Bologna (Italy)",
+      "University of Padua (Italy)",
+      "University of Ferrara (Italy)",
+      "Frombork Cathedral (Poland)",
+    ),
+    email: "NicolausCopernicus@krakow.edu",
+    orcid: "0000-0001-2345-6789",
+  ),
+  "Tycho Brahe": (
+    affiliation: (
+      "University of Copenhagen (Denmark)",
+      "Leipzig University (Germany)",
+      "University of Rostock (Germany)",
+    ),
+    email: "TychoBarhe@copenhagen.edu",
+  )
+)
 
 #let github-black = rgb("0d1117")
 #let github-white = rgb("f0f6fc")
@@ -107,6 +128,35 @@
   ],
   [
     #let (authors, affiliations) = get-affiliations(authors-info)
+    #authors
+    #affiliations
+  ],
+)
+
+== Example 2: Default options
+#grid(
+  [
+    ```typst
+    #let authors-info = (
+      "Nicolaus Copernicus": (
+        affiliation: (
+          "University of Krakow (Poland)",
+          "University of Bologna (Italy)",
+          "University of Padua (Italy)",
+          "University of Ferrara (Italy)",
+          "Frombork Cathedral (Poland)",
+        ),
+        email: "NicolausCopernicus@krakow.edu",
+        orcid: "0000-0001-2345-6789"
+      ), // and many other authors...
+    )
+    #let (authors, affiliations) = get-affiliations(authors-info2)
+    #authors
+    #affiliations
+    ```
+  ],
+  [
+    #let (authors, affiliations) = get-affiliations(authors-info2)
     #authors
     #affiliations
   ],

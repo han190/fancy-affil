@@ -191,7 +191,7 @@ A dictionary with the following keys:
 - orcids: an array of strings
     An array containing the ORCID IDs of the authors.
 */
-#let parse-authors-dict(authors, authors-numbering) = {
+#let parse-authors(authors, authors-numbering: "1") = {
   let (affils, affil-indices, emails, orcids) = ((), (), (), ())
   let orcid-domain = "https://orcid.org/"
 
@@ -361,14 +361,15 @@ array of two blocks
     // If authors is an array of dictionaries.
   } else if authors-type == 3 {
     let authors-numbering = optional("authors-numbering", "1")
-    let authors-info = parse-authors-dict(authors, authors-numbering)
+    let authors-info = parse-authors(
+      authors, authors-numbering: authors-numbering)
 
     // Authors
     if authors-info.name.len() == 2 {
       authors-join = authors-join-2
       // If two authors share same affiliation combine them.
-      if affil-indices.at(0) == affil-indices.at(1) {
-        affil-indices.at(0) = none
+      if authors-info.affil-index.at(0) == authors-info.affil-index.at(1) {
+        authors-info.affil-index.at(0) = none
       }
     }
 
